@@ -13,7 +13,5 @@ nodemon.json
 
 #misc
 
-# Claude Code: ignore everything by default, then re-include project knowledge
-.claude/*
-!.claude/docs/
-!.claude/rules/
+# Copilot local validation targets
+.github/validate-config.json

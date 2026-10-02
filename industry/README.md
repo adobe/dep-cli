@@ -67,7 +67,7 @@ industry/
    - Create one action file per menu item at `menus/<packName>/<actionName>.js`
    - Add the sub-menu to the main menu in `index.js`
 
-   The `cli-menu` skill (`.claude/skills/cli-menu/`) scaffolds the three files needed for a new
+   The `cli-menu` skill (`.github/skills/cli-menu/`) scaffolds the three files needed for a new
    menu action: the menu entry, the action file, and the lib stub.
 
 ## Placeholder Conventions

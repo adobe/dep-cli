@@ -98,10 +98,16 @@ export async function createProfileBase() {
     const catalog = yaml.load(fs.readFileSync(catalogPath, "utf8"));
     const schemasCatalog = yaml.load(fs.readFileSync(schemasCatalogPath, "utf8"));
 
-    await deploySchemaModel(deployYamlPath, envMap, accessToken, {
+    const deployment = await deploySchemaModel(deployYamlPath, envMap, accessToken, {
       type: "standard",
       enableProfile: true,
     });
+    if (!deployment) return;
+    const { tenantId } = deployment;
+    if (typeof tenantId !== "string" || !tenantId.startsWith("_") || tenantId.length < 2) {
+      console.log(chalk.red("  ✗") + " Cannot create audiences: missing or invalid tenant ID.");
+      return;
+    }
 
     const existingSchemas = await listSchemas(accessToken, envMap);
     const expectedNames = deployYaml.standard.schemas
@@ -177,32 +183,37 @@ export async function createProfileBase() {
     const existingSegments = await listSegmentDefinitions(accessToken, envMap);
 
     for (const entry of entries) {
-      const resolvedName = entry.name.replace(/\{PREFIX_NAME\}/g, PREFIX_STANDARD);
+      try {
+        const resolvedName = entry.name.replace(/\{PREFIX_NAME\}/g, PREFIX_STANDARD);
 
-      if (existingSegments.find((s) => s.name === resolvedName)) {
-        console.log(chalk.green("  ✓") + ` Already exists: ${resolvedName}`);
-        continue;
+        if (existingSegments.find((s) => s.name === resolvedName)) {
+          console.log(chalk.green("  ✓") + ` Already exists: ${resolvedName}`);
+          continue;
+        }
+
+        const raw = fs.readFileSync(path.resolve(process.cwd(), entry.file), "utf8");
+        const body = JSON.parse(raw.replace(/\{tenantId\}/g, () => tenantId));
+
+        if (entry.editableInUi && body.ansibleDataModel) {
+          body.ansibleDataModel.hash = String(_createSegmentHash(body.expression.value));
+        }
+
+        const payload = {
+          name: resolvedName,
+          description: (entry.description || entry.name).replace(/\{PREFIX_NAME\}/g, PREFIX_STANDARD),
+          expression: body.expression,
+          ...(body.ansibleDataModel ? { ansibleDataModel: body.ansibleDataModel } : {}),
+          evaluationInfo: _buildEvaluationInfo(entry.evaluationMode),
+          schema: { name: "_xdm.context.profile" },
+          ttlInDays: 60,
+        };
+
+        const id = await createSegmentDefinition(accessToken, envMap, payload);
+        if (id) console.log(chalk.green("  ✓") + ` Created: ${resolvedName}`);
+        else console.log(chalk.red("  ✗") + ` Failed: ${resolvedName}`);
+      } catch (audienceErr) {
+        console.log(chalk.red("  ✗") + ` Audience "${entry.key}": ${audienceErr.message}`);
       }
-
-      const body = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), entry.file), "utf8"));
-
-      if (entry.editableInUi && body.ansibleDataModel) {
-        body.ansibleDataModel.hash = String(_createSegmentHash(body.expression.value));
-      }
-
-      const payload = {
-        name: resolvedName,
-        description: (entry.description || entry.name).replace(/\{PREFIX_NAME\}/g, PREFIX_STANDARD),
-        expression: body.expression,
-        ...(body.ansibleDataModel ? { ansibleDataModel: body.ansibleDataModel } : {}),
-        evaluationInfo: _buildEvaluationInfo(entry.evaluationMode),
-        schema: { name: "_xdm.context.profile" },
-        ttlInDays: 60,
-      };
-
-      const id = await createSegmentDefinition(accessToken, envMap, payload);
-      if (id) console.log(chalk.green("  ✓") + ` Created: ${resolvedName}`);
-      else console.log(chalk.red("  ✗") + ` Failed: ${resolvedName}`);
     }
 
     console.log("\nStandard schemas, datasets, merge policies, and audiences setup complete.",);

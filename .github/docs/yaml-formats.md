@@ -193,8 +193,13 @@ Multiple catalog entries may share one body file when only `name`/`evaluationMod
 
 | Placeholder | Where used | Replaced with |
 | --- | --- | --- |
-| `{tenantId}` | `field-groups/`, `mapping-sets/` JSON files, descriptor `sourceProperty` paths | Org tenant namespace (e.g. `_myorg`) — fetched via Tenant API at runtime |
+| `{tenantId}` | `field-groups/`, `mapping-sets/`, `standard/audiences/` JSON files, descriptor `sourceProperty` paths | Org tenant namespace (e.g. `_myorg`) — fetched via Tenant API at runtime |
 | `{PREFIX_NAME}` | `schemas.yaml` name fields, `audiences.yaml` names, merge policy names | `PREFIX_STANDARD` (`dep`) in standard YAMLs, `PREFIX_RELATIONAL` (`dep-rel`) in relational YAMLs — type-aware substitution; constants in `lib/constants/prefix.js` |
 | `{CLASS_<key>}` | Runtime-internal only — not written in any file | `$id` of a custom class after creation; resolves `intendedToExtend` for FGs targeting a custom class |
 
 All use single curly-brace syntax. `{PREFIX_NAME}` appears only in YAML `name` fields, never in JSON body files.
+
+Audience loaders reuse the tenant ID returned by standard schema deployment and
+replace `{tenantId}` throughout the body before JSON parsing and UI hash
+calculation. Use it in both the PQL expression and matching `ansibleDataModel`
+field paths; audience names and descriptions still use `{PREFIX_NAME}`.

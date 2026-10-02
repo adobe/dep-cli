@@ -1,7 +1,7 @@
 {
   "expression": {
     "format": "pql/json",
-    "value": "{\"nodeType\":\"fnApply\",\"fnName\":\"in\",\"params\":[{\"nodeType\":\"fieldLookup\",\"fieldName\":\"name\",\"object\":{\"nodeType\":\"fieldLookup\",\"fieldName\":\"plan\",\"object\":{\"nodeType\":\"fieldLookup\",\"fieldName\":\"_dep\",\"object\":{\"nodeType\":\"parameterReference\",\"position\":1}}}},{\"nodeType\":\"literal\",\"literalType\":\"List\",\"value\":[\"basic\"]}]}"
+    "value": "{\"nodeType\":\"fnApply\",\"fnName\":\"in\",\"params\":[{\"nodeType\":\"fieldLookup\",\"fieldName\":\"name\",\"object\":{\"nodeType\":\"fieldLookup\",\"fieldName\":\"plan\",\"object\":{\"nodeType\":\"fieldLookup\",\"fieldName\":\"{tenantId}\",\"object\":{\"nodeType\":\"parameterReference\",\"position\":1}}}},{\"nodeType\":\"literal\",\"literalType\":\"List\",\"value\":[\"basic\"]}]}"
   },
   "ansibleDataModel": {
     "dataModel": {
@@ -23,7 +23,7 @@
               ],
               "itemType": "segmentRule",
               "component": {
-                "id": "profile._dep.plan.name",
+                "id": "profile.{tenantId}.plan.name",
                 "type": "rE",
                 "__entity__": true
               },
