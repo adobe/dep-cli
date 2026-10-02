@@ -1,7 +1,12 @@
+---
+description: "Use when editing DEP CLI menus and actions: sentence case, action verbs, pinned choices, and Inquirer APIs."
+applyTo: "**"
+---
+
 # DEP CLI Menu Conventions
 
 Single source of truth for menu naming, action verb patterns, and structural rules.
-Referenced by `CLAUDE.md`.
+Referenced by `.github/copilot-instructions.md`.
 
 ---
 
@@ -31,7 +36,7 @@ the user to run individual create and load actions.
 **Exception: `sandboxManagement`** is not bound by the five canonical verbs above. Sandbox
 lifecycle operations (Reset, and any future Create / Delete actions targeting sandboxes
 themselves) are intrinsic to sandbox management and use the verb that fits the operation.
-This mirrors the existing `sandboxManagement` exceptions in [`module-registry.md`](module-registry.md)
+This mirrors the existing `sandboxManagement` exceptions in [Module registry](module-registry.instructions.md)
 (no "Clean sandbox" pinned entry).
 
 ---

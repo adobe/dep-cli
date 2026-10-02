@@ -1,7 +1,12 @@
+---
+description: "Use when editing DEP CLI code: architecture, retry behavior, timing, polling, prompts, output, and encoding."
+applyTo: "**"
+---
+
 # DEP CLI Code Conventions
 
 Single source of truth for architectural rules, naming, timing, and output
-formatting. Referenced by `CLAUDE.md`.
+formatting. Referenced by `.github/copilot-instructions.md`.
 
 ---
 
@@ -36,7 +41,7 @@ formatting. Referenced by `CLAUDE.md`.
   `check*`/`get*`, `stream*`, `patch*`
 - **Private helpers**: `_` prefix, never exported
 
-See [`.claude/rules/menu-conventions.md`] for menu naming and structural rules.
+See [Menu conventions](menu-conventions.instructions.md) for menu naming and structural rules.
 
 ---
 
@@ -116,4 +121,4 @@ or SIGINT handlers in action files.
 
 - **UTF-8 without BOM** for all source files.
 - **Never use PowerShell to write or edit source files** — PowerShell 5.1 writes a BOM that
-  corrupts multi-byte characters. Use the Edit or Write tools only.
+  corrupts multi-byte characters. Use Copilot's file-editing tools for manual edits.

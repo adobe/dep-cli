@@ -1,7 +1,12 @@
+---
+description: "Use when resolving DEP CLI modules, manifests, sandbox reset safety, and schema deletion locks."
+applyTo: "**"
+---
+
 # DEP CLI Module Registry
 
 Single source of truth for module directory names, menu labels, lab-pack manifest paths,
-and module-specific exceptions. Referenced by `CLAUDE.md`.
+and module-specific exceptions. Referenced by `.github/copilot-instructions.md`.
 
 ---
 

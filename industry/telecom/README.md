@@ -89,7 +89,7 @@ dataLoad:
   - customer-account:decisioning
 ```
 
-See [`../../.claude/docs/yaml-formats.md`](../../.claude/docs/yaml-formats.md) for the full spec.
+See [YAML formats](../../.github/docs/yaml-formats.md) for the full spec.
 
 ## Naming conventions used here
 

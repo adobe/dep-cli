@@ -24,7 +24,7 @@ Uses `@inquirer/prompts` (modern API — not legacy `inquirer.prompt([...])` arr
 
 - `lib/prompts/promptSafe.js`: `safeConfirm(message, defaultValue)` and `safeInput(message)` — wrap confirm/input with Ctrl+C (ExitPromptError) handling.
 - `lib/prompts/continuePrompt.js`: `askConfirm`, `askConfirmDestructive`, `askConfirmGeneric` — action-layer helpers that call `safeConfirm` and emit `console.log()` before the prompt for spacing.
-- `lib/prompts/numberedMenuPrompt.js`: `numberedMenuPrompt(choices, title, pinnedChoices = [], disabledChoices = [])` — renders a numbered menu. `choices` entries with `{ separator: true, name }` render as a dim section header (not numbered, not selectable). `disabledChoices` entries render dim with an optional reason string from the `disabled` field. See `.claude/docs/menu-architecture.md` for full usage.
+- `lib/prompts/numberedMenuPrompt.js`: `numberedMenuPrompt(choices, title, pinnedChoices = [], disabledChoices = [])` — renders a numbered menu. `choices` entries with `{ separator: true, name }` render as a dim section header (not numbered, not selectable). `disabledChoices` entries render dim with an optional reason string from the `disabled` field. See `.github/docs/menu-architecture.md` for full usage.
 
 ## Lib Modules
 

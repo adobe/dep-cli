@@ -4,21 +4,39 @@ Adobe Platform API endpoints for verifying every artifact type the CLI creates.
 
 ## Setup — credential loading
 
-Before any API call, load credentials from the cached session:
+Before any API call, use the module target explicitly selected in
+`.github/validate-config.json`. Ask for a missing target; never infer it from
+the cached session. Run this setup and the relevant API checks in the same Node
+process so the token stays in memory:
 
 ```javascript
-// Read cached session
-const session = JSON.parse(fs.readFileSync('lib/env/session.json', 'utf-8'));
-// session.envFilePath → path to the active envFiles/*.json
-const envMap = JSON.parse(fs.readFileSync(session.envFilePath, 'utf-8'));
+import fs from 'node:fs';
+import { getAccessToken } from '../../lib/env/getAccessToken.js';
 
-// Get access token (one-liner)
-node -e "
-  const g = require('./lib/env/getAccessToken');
-  const e = JSON.parse(require('fs').readFileSync('lib/env/session.json'));
-  const env = JSON.parse(require('fs').readFileSync(e.envFilePath));
-  g.getAccessToken(env).then(t => console.log(t));
-"
+const config = JSON.parse(fs.readFileSync('.github/validate-config.json', 'utf8'));
+const target = config['[MODULE]'];
+if (!target?.envFile || !target?.sandbox) throw new Error('Missing validation target');
+const envFile = JSON.parse(fs.readFileSync(target.envFile, 'utf8'));
+const envMap = Object.fromEntries(
+  envFile.values.filter(value => value.enabled !== false).map(value => [value.key, value.value])
+);
+envMap.SANDBOX_NAME = target.sandbox;
+const accessToken = await getAccessToken(envMap);
+if (!accessToken) throw new Error('Authentication failed');
+```
+
+The import above is relative to this document. When executing from the workspace
+root, use `./lib/env/getAccessToken.js`. Replace `[MODULE]` with the selected
+module key, not credential values. Never print `envMap`, access tokens, or raw
+responses containing sensitive fields.
+
+On Windows PowerShell, use a single-quoted here-string for multiline scripts:
+
+```powershell
+@'
+import fs from 'node:fs';
+console.log(fs.existsSync('.github/validate-config.json'));
+'@ | node --input-type=module
 ```
 
 All API calls use these headers:
